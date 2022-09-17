@@ -101,7 +101,7 @@ export class RepositoryBase<TEntity extends EntityBase>{
         repository_model.pageInfo.total_records = array_from_db != null ? array_from_db[1] : 0;
 
 
-        
+        console.log(query_with_data[0][0])
         if (query_with_data != null && query_with_data.length > 0) {
             query_with_data[0].forEach((item) => {
                 repository_model.dataCollection.push(item);
@@ -115,31 +115,31 @@ export class RepositoryBase<TEntity extends EntityBase>{
         return repository_model;
     }
 
-    getAll(requestModelQuery: RequestModelQuery): RepositoryModel<TEntity> {
+    // getAll(requestModelQuery: RequestModelQuery): RepositoryModel<TEntity> {
 
-        const myDataSource = new DataSource(null);
-        //temp you can hardcode the data in entity and populate the pageInfo object
+    //     const myDataSource = new DataSource(null);
+    //     //temp you can hardcode the data in entity and populate the pageInfo object
 
 
-        //calling the function delegate if required which is specific to the respective applicaton class
-        // if (this.function_delegate != null) {
-        //     this.function_delegate();
-        // }
-        console.log('getall function call')
-        let repositoryModel = new RepositoryModel<TEntity>();
-        repositoryModel.pageInfo = new PageInfo();
-        repositoryModel.dataCollection = new Array<TEntity>();
+    //     //calling the function delegate if required which is specific to the respective applicaton class
+    //     // if (this.function_delegate != null) {
+    //     //     this.function_delegate();
+    //     // }
+    //     console.log('getall function call')
+    //     let repositoryModel = new RepositoryModel<TEntity>();
+    //     repositoryModel.pageInfo = new PageInfo();
+    //     repositoryModel.dataCollection = new Array<TEntity>();
 
-        //todo: get objects from db
-        let obj = this.entityInstanceFunction;
+    //     //todo: get objects from db
+    //     let obj = this.entityInstanceFunction;
 
-        // console.log("entity wala",obj)
+    //     // console.log("entity wala",obj)
 
-        repositoryModel.dataCollection.push(obj);
+    //     repositoryModel.dataCollection.push(obj);
 
-        //evaluate the total number of records in database
-        return repositoryModel;
-    }  
+    //     //evaluate the total number of records in database
+    //     return repositoryModel;
+    // }  
 
      
       
@@ -163,15 +163,23 @@ export class RepositoryBase<TEntity extends EntityBase>{
 
     async post(age:number,name:string): Promise<RepositoryModel<TEntity>> {
         // let entity_in_plural_form = pluralize(this.entityName);
-        let array_from_db = this.repository != null ? await this.repository.findAndCount() : null;
+        
+        // console.log("this one is for last value",array_from_db[0][array_from_db[0].length-1])
+        // console.log(array_from_db)
      await this.repository.createQueryBuilder().insert().into(this.entityName).values([{age:age,name:name}]).execute()
+     let array_from_db = this.repository != null ? await this.repository.findAndCount() : null;
      let repository_model = new RepositoryModel<TEntity>();
-     repository_model.dataCollection = new Array<TEntity>
+     repository_model.dataCollection = new Array<TEntity>;
+     repository_model.pageInfo = new PageInfo();
+     repository_model.pageInfo.total_records = array_from_db != null ? array_from_db[1] : 0;
+     repository_model.dataCollection.push(array_from_db[0][array_from_db[0].length-1])
+    // let x= array_from_db
+    // console.log(x)
     //  repository_model.pageInfo = new PageInfo();
     //  repository_model.pageInfo.total_records = array_from_db != null ? array_from_db[1] : 0;
-    //  repository_model.dataCollection.push()
+    //  s
     
-      return  
+      return  repository_model
     }
 
     async getById(id:number) {
