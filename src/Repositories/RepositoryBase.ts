@@ -190,10 +190,12 @@ export class RepositoryBase<TEntity extends EntityBase>{
         repository_model.dataCollection = new Array<TEntity>;
         repository_model.pageInfo = new PageInfo();
         repository_model.pageInfo.total_records = array_from_db != null ? array_from_db[1] : 0;
-        repository_model.dataCollection.push(array_from_db[0][array_from_db[0].length-1])
+        repository_model.dataCollection.push(array_from_db[0].find(el=>el.id==id))
         // repository_model.pageInfo.page_number = 
 
-        console.log(repository_model.pageInfo.page_size)
+        // let x=
+
+        // console.log("this is what i want",x)
         return repository_model
     }
 
@@ -207,7 +209,7 @@ export class RepositoryBase<TEntity extends EntityBase>{
         repository_model.dataCollection = new Array<TEntity>;
         repository_model.pageInfo = new PageInfo();
         repository_model.pageInfo.total_records = array_from_db != null ? array_from_db[1] : 0;
-        repository_model.dataCollection.push(array_from_db[0][array_from_db[0].length-1])
+        repository_model.dataCollection.push(array_from_db[0].find(el=>el.id==id))
         // console.log(data_with_query)
         return repository_model
     }
