@@ -22,10 +22,10 @@ export class EmployeeRepository extends RepositoryBase<Employee>{
 //, typeof Employee
        // let x = usersRepository.find();
     }
-    create(age:number,name:string,){
-        const user = this.repository.create({age,name});
-        return this.repository.save(user)
-    }
+    // create(age:number,name:string,){
+    //     const user = this.repository.create({age,name});
+    //     return this.repository.save(user)
+    // }
     
 
 

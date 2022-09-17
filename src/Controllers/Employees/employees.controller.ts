@@ -1,4 +1,4 @@
-import { Controller, Get, NotFoundException, Param, Query } from '@nestjs/common';
+import { Body, Controller, Get, NotFoundException, Param, Post, Query } from '@nestjs/common';
 import { syncBuiltinESMExports } from 'module';
 import EmployeeAppService from 'src/AppService/EmployeeAppService';
 import { EmployeeDto } from 'src/Dtos/EmployeeDto';
@@ -9,13 +9,14 @@ import RequestModel from 'src/Models/RequestModel';
 import ResponseModel from "src/Models/ReponseModel";
 
 import { Headers } from '@nestjs/common';
+import { EmployeeRepository } from 'src/Repositories/EmployeeRepository';
+import RepositoryModel from 'src/Models/RepositoryModel';
 
 @Controller('Employees')
 export class EmployeesController {
-
-
-
-  constructor(private readonly employeeFacade: EmployeeFacade) {
+  
+   
+  constructor(private readonly employeeFacade: EmployeeFacade,private employeerepository:EmployeeRepository) {
 
     console.log('printing Employee Facade');
     console.log(employeeFacade);
@@ -49,10 +50,24 @@ export class EmployeesController {
   }
 
   @Get('/:id')
-  get(@Param('id') id: number): string {
-    //return this.employeesService.get(id);
-    return id.toString();
+  get(@Param('id') id: number) {
+   
+     return this.employeerepository.getById(id)
+  
   }
+
+  @Get('/all')
+  getALL(){
+  // return this .employeeFacade.getALL()
+  }
+
+  @Post()
+  insertquery(@Body() body: any){
+    let response = this.employeerepository.post(body.age,body.name)
+    return response
+  }
+  
+ 
 
 
   async listner() {
