@@ -67,10 +67,10 @@ export class RepositoryBase<TEntity extends EntityBase>{
 
         var query_with_data = await this.repository.createQueryBuilder(entity_in_plural_form)
             .where(query_condition, query_object).getManyAndCount();
-            //"id = :id"  { id: 2 }
+            //"id = :id"  { id: 2 } and "id= :id" { id:3 }
 
 
-        console.log("query with data",query_with_data);
+        console.log("query condition",query_condition+","+Object.values(query_object));
        // var t1 = await this.repository.findAndCount(query);
 
         //let typeFinder = new Typefinder<TEntity>(TEntity));
@@ -182,19 +182,39 @@ export class RepositoryBase<TEntity extends EntityBase>{
       return  repository_model
     }
 
-    async getById(id:number) {
+    async getById(id:number): Promise<RepositoryModel<TEntity>> {
         let data_with_query = await this.repository.createQueryBuilder().select('emp').from(this.entityName,'emp').where("emp.id = :id",{id:id}
         ).getOne()
-        console.log(data_with_query)
-        return data_with_query
+        let array_from_db = this.repository != null ? await this.repository.findAndCount() : null;
+        let repository_model = new RepositoryModel<TEntity>();
+        repository_model.dataCollection = new Array<TEntity>;
+        repository_model.pageInfo = new PageInfo();
+        repository_model.pageInfo.total_records = array_from_db != null ? array_from_db[1] : 0;
+        repository_model.dataCollection.push(array_from_db[0][array_from_db[0].length-1])
+        // repository_model.pageInfo.page_number = 
+
+        console.log(repository_model.pageInfo.page_size)
+        return repository_model
     }
 
 
-    put(): RepositoryModel<TEntity> {
-        return;
+    async put(id:number,age:string,name:string): Promise<RepositoryModel<TEntity>> {
+       
+        await this.repository.createQueryBuilder().update(this.entityName).set({age:age,name:name}).where("id= :id",{id:id})
+        .execute()
+        let array_from_db = this.repository != null ? await this.repository.findAndCount() : null;
+        let repository_model = new RepositoryModel<TEntity>();
+        repository_model.dataCollection = new Array<TEntity>;
+        repository_model.pageInfo = new PageInfo();
+        repository_model.pageInfo.total_records = array_from_db != null ? array_from_db[1] : 0;
+        repository_model.dataCollection.push(array_from_db[0][array_from_db[0].length-1])
+        // console.log(data_with_query)
+        return repository_model
     }
 
-    delete(): boolean {
-        return;
+    async delete(id:number): Promise<boolean> {
+         //"id = :id"  { id: 2 }
+       await this.repository.createQueryBuilder().delete().from(this.entityName).where("id= :id",{id:id}).execute()
+        return true
     }
 }

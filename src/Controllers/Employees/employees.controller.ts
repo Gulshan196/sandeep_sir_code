@@ -1,4 +1,4 @@
-import { Body, Controller, Get, NotFoundException, Param, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, NotFoundException, Param, Post, Put, Query } from '@nestjs/common';
 import { syncBuiltinESMExports } from 'module';
 import EmployeeAppService from 'src/AppService/EmployeeAppService';
 import { EmployeeDto } from 'src/Dtos/EmployeeDto';
@@ -56,14 +56,21 @@ export class EmployeesController {
   
   }
 
-  @Get('/all')
-  getALL(){
+  @Delete('/delete/:id')
+  DeleteId(@Param('id') id:number){
+    return this.employeerepository.delete(id)
   // return this .employeeFacade.getALL()
   }
 
   @Post()
   insertquery(@Body() body: any){
     let response = this.employeerepository.post(body.age,body.name)
+    return response
+  }
+
+  @Put('/:id')
+  update(@Param('id') id:number,@Body() body:any){
+    let response = this.employeerepository.put(id,body.age,body.name)
     return response
   }
   
